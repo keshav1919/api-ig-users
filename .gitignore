@@ -1,0 +1,40 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Node dependencies & builds
+node_modules/
+**/node_modules/
+dist/
+dist-ssr/
+build/
+
+# Python bytecode & cache
+__pycache__/
+**/__pycache__/
+*.py[cod]
+
+# Environment files with private tokens
+.env
+**/.env
+!*.env.example
+
+# Temporary, scratch & logs
+scratch/
+**/scratch/
+*.log
+**/*.log
+.DS_Store
+Thumbs.db
+.git_badge/
+**/.git_badge/
+.pytest_cache/
+**/.pytest_cache/
+.mypy_cache/
+**/.mypy_cache/
+*.session
+*.json.session
+shared-backend/data/*
+!shared-backend/data/.gitkeep
+cloudflared.exe

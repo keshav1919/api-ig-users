@@ -1,0 +1,3 @@
+legendtech.store, api.legendtech.store, www.legendtech.store {
+    reverse_proxy localhost:8000
+}

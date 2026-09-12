@@ -1,0 +1,13 @@
+.env
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+*.py[cod]
+*.session
+*.json.session
+data/ig_session.json
+data/
+!data/.gitkeep
+*.log
+.mypy_cache/
