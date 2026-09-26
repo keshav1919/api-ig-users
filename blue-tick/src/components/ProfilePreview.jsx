@@ -13,6 +13,7 @@ import {
   Zap,
   Newspaper,
   HelpCircle,
+  Lock,
 } from 'lucide-react';
 import VerifiedBadge from './VerifiedBadge';
 import { useUser } from '../context/UserContext';
@@ -29,6 +30,7 @@ export const ProfilePreview = ({
   posts: propPosts,
 }) => {
   const { currentUser } = useUser();
+  const isPrivate = Boolean(currentUser?.isPrivate);
 
   const username = propUsername || currentUser?.username || 'horrorgoattv';
   const displayName = propDisplayName || currentUser?.fullName || 'horror goattv';
@@ -56,12 +58,15 @@ export const ProfilePreview = ({
   return (
     <div className="w-full max-w-[390px] mx-auto bg-white rounded-lg border border-[#DBDBDB] shadow-sm overflow-hidden select-none">
       {/* Live Detected Profile Indicator */}
-      <div className="bg-emerald-50 border-b border-emerald-200/60 px-3 py-1.5 flex items-center justify-between text-[10px] font-bold text-emerald-700">
+      <div className={`px-3 py-1.5 flex items-center justify-between text-[10px] font-bold ${isPrivate ? 'bg-amber-50 border-b border-amber-200/60 text-amber-800' : 'bg-emerald-50 border-b border-emerald-200/60 text-emerald-700'}`}>
         <span className="flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          Profile Photo Detected
+          <span className={`w-1.5 h-1.5 rounded-full ${isPrivate ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse`}></span>
+          {isPrivate ? 'Private Profile Live Detected' : 'Profile Photo Detected'}
         </span>
-        <span className="font-mono">@{username}</span>
+        <span className="font-mono flex items-center gap-1">
+          {isPrivate && <Lock className="w-2.5 h-2.5 text-amber-700 inline" />}
+          @{username}
+        </span>
       </div>
 
       {/* Instagram App Top Header */}
@@ -71,6 +76,7 @@ export const ProfilePreview = ({
         </button>
 
         <div className="flex items-center gap-1 cursor-pointer">
+          {isPrivate && <Lock className="w-3.5 h-3.5 text-[#262626] stroke-[2.2] -mr-0.5" />}
           <span className="font-bold text-sm text-[#262626] tracking-tight">{username}</span>
           <VerifiedBadge size={14} />
           <ChevronDown className="w-3.5 h-3.5 text-[#262626] -ml-0.5" />

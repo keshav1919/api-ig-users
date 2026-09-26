@@ -126,12 +126,12 @@ async def get_instagram_profile(username: str, request: Request) -> dict:
                 "isPrivate": profile_data.is_private,
                 "error": None,
             }
-            cached_status = AccountStatus.NOT_FOUND if profile_data.is_private else AccountStatus.ACTIVE
+            cached_status = AccountStatus.ACTIVE
             await status_cache.put(
                 normalized,
                 CheckResult(
                     cached_status,
-                    f"Account found: {response['fullName']}" if cached_status == AccountStatus.ACTIVE else f"Private account: @{normalized}",
+                    f"{'Private account' if profile_data.is_private else 'Account'} found: {response['fullName']}",
                 ),
             )
         else:

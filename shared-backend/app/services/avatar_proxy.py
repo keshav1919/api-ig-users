@@ -49,15 +49,27 @@ async def fetch_avatar(client: httpx.AsyncClient, image_url: str) -> Optional[Tu
         return None
 
     try:
-        response = await client.get(
-            image_url,
-            headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-                "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-                "Referer": "https://www.instagram.com/",
-            },
-            timeout=10.0
-        )
+        try:
+            response = await client.get(
+                image_url,
+                headers={
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                    "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+                    "Referer": "https://www.instagram.com/",
+                },
+                timeout=10.0
+            )
+        except (httpx.ProxyError, httpx.ConnectError) as p_err:
+            LOGGER.warning("Proxy error fetching avatar (%s). Retrying directly...", p_err)
+            async with httpx.AsyncClient(timeout=10.0, trust_env=False) as direct_c:
+                response = await direct_c.get(
+                    image_url,
+                    headers={
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                        "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+                        "Referer": "https://www.instagram.com/",
+                    },
+                )
         if response.status_code == 200:
             content_type = response.headers.get("content-type", "image/jpeg")
             return response.content, content_type

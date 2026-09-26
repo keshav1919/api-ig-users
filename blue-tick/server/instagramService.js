@@ -150,11 +150,8 @@ export async function fetchInstagramProfile(rawUsername) {
             break;
           }
 
-          // If title is just "Instagram" and not a login wall, account does not exist
-          if (pageTitle.trim() === 'Instagram' && !pageText.includes('og:image')) {
-            isExplicitlyNotFound = true;
-            break;
-          }
+          // Note: Instagram often shows title 'Instagram' for private accounts or session challenges;
+          // explicit 404 or Page Not Found is checked above.
         } catch (e) {
           // try next user agent
         }

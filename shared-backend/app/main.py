@@ -43,19 +43,25 @@ async def lifespan(app: FastAPI):
     settings: Settings = app.state.settings
 
     # Create shared HTTP client
-    http_client = httpx.AsyncClient(
-        timeout=httpx.Timeout(
+    client_kwargs: dict = {
+        "timeout": httpx.Timeout(
             connect=settings.connect_timeout_seconds,
             read=settings.read_timeout_seconds,
             write=10.0,
             pool=10.0,
         ),
-        follow_redirects=True,
-        limits=httpx.Limits(
+        "follow_redirects": True,
+        "limits": httpx.Limits(
             max_connections=100,
             max_keepalive_connections=50,
         ),
-    )
+    }
+    if settings.proxy_url:
+        masked_proxy = settings.proxy_url.split("@")[-1] if "@" in settings.proxy_url else settings.proxy_url
+        LOGGER.info("Configuring shared HTTP client with proxy: %s", masked_proxy)
+        client_kwargs["proxy"] = settings.proxy_url
+
+    http_client = httpx.AsyncClient(**client_kwargs)
     app.state.http_client = http_client
 
     # Create Instagram status checker
@@ -65,6 +71,7 @@ async def lifespan(app: FastAPI):
         two_factor_key=settings.ig_2fa_key,
         session_file=settings.ig_session_file,
         sessionid=settings.ig_sessionid,
+        proxy=settings.proxy_url,
         connect_timeout=settings.connect_timeout_seconds,
         read_timeout=settings.read_timeout_seconds,
         retry_delay=settings.retry_delay_seconds,
@@ -173,6 +180,11 @@ def main() -> int:
     print(f"Host:    {settings.api_host}")
     print(f"Port:    {settings.api_port}")
     print(f"Workers: {settings.max_concurrent_checks} concurrent checks")
+    if settings.proxy_url:
+        masked = settings.proxy_url.split("@")[-1] if "@" in settings.proxy_url else settings.proxy_url
+        print(f"Proxy:   Active ({masked})")
+    else:
+        print("Proxy:   Direct (None)")
     print("=" * 50)
 
     app = create_app(settings)

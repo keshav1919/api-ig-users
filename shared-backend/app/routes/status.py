@@ -80,15 +80,16 @@ async def check_status(username: str, request: Request) -> StatusResponse:
             if result.status == AccountStatus.UNKNOWN and profiler:
                 try:
                     p_data = await profiler.fetch_profile(normalized)
-                    if p_data and p_data.exists and not p_data.is_private:
+                    if p_data and p_data.exists:
+                        acc_type = "Private account" if p_data.is_private else "Public account"
                         result = CheckResult(
                             status=AccountStatus.ACTIVE,
-                            reason=f"Public account found: {p_data.full_name or normalized}",
+                            reason=f"{acc_type} found: {p_data.full_name or normalized}",
                         )
                     else:
                         result = CheckResult(
                             status=AccountStatus.NOT_FOUND,
-                            reason="Account is private, suspended, or does not exist",
+                            reason="Account does not exist or is suspended",
                         )
                 except Exception as exc:
                     LOGGER.warning("Secondary profile check failed for %s: %s", normalized, exc)
@@ -189,15 +190,16 @@ async def batch_check_status(body: BatchStatusRequest, request: Request) -> Batc
                     if result.status == AccountStatus.UNKNOWN and profiler:
                         try:
                             p_data = await profiler.fetch_profile(normalized)
-                            if p_data and p_data.exists and not p_data.is_private:
+                            if p_data and p_data.exists:
+                                acc_type = "Private account" if p_data.is_private else "Public account"
                                 result = CheckResult(
                                     status=AccountStatus.ACTIVE,
-                                    reason=f"Public account found: {p_data.full_name or normalized}",
+                                    reason=f"{acc_type} found: {p_data.full_name or normalized}",
                                 )
                             else:
                                 result = CheckResult(
                                     status=AccountStatus.NOT_FOUND,
-                                    reason="Account is private, suspended, or does not exist",
+                                    reason="Account does not exist or is suspended",
                                 )
                         except Exception as exc:
                             LOGGER.warning("Secondary profile check failed for %s: %s", normalized, exc)

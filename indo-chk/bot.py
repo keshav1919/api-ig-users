@@ -174,6 +174,7 @@ class SharedApiClient:
             headers=headers,
             timeout=httpx.Timeout(connect=5.0, read=read_timeout, write=10.0, pool=10.0),
             limits=httpx.Limits(max_connections=100, max_keepalive_connections=50),
+            trust_env=False,
         )
 
     async def check_health(self) -> dict | None:

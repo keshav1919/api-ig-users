@@ -89,6 +89,9 @@ class Settings:
     rate_limit_per_minute: int = 30
     batch_rate_limit_per_minute: int = 10
     
+    # Proxy
+    proxy_url: str = ""
+    
     # Logging
     log_level: str = "INFO"
 
@@ -106,6 +109,7 @@ class Settings:
         ig_2fa_key = _first_non_empty("IG_2FA_KEY", "IG_2FA_SECRET", "INSTAGRAM_2FA_KEY")
         ig_session_file = _first_non_empty("IG_SESSION_FILE", "INSTAGRAM_SESSION_FILE", default="data/ig_session.json")
         ig_sessionid = _first_non_empty("IG_SESSIONID", "INSTAGRAM_SESSIONID", default="")
+        proxy_url = _first_non_empty("PROXY_URL", "HTTP_PROXY", "HTTPS_PROXY", default="")
         
         allowed_origins_raw = os.getenv("ALLOWED_ORIGINS", "")
         
@@ -129,5 +133,6 @@ class Settings:
             api_key=os.getenv("API_KEY", "").strip(),
             rate_limit_per_minute=_integer("RATE_LIMIT_PER_MINUTE", 300, 1, 5000),
             batch_rate_limit_per_minute=_integer("BATCH_RATE_LIMIT_PER_MINUTE", 60, 1, 1000),
+            proxy_url=proxy_url,
             log_level=log_level,
         )

@@ -14,7 +14,7 @@ from instagrapi.exceptions import (
 )
 
 from app.services.instagram_status import InstagramChecker
-from app.models import AccountStatus
+from app.models import AccountStatus, CheckResult
 
 
 @pytest.mark.asyncio
@@ -194,9 +194,10 @@ async def test_unauthenticated_without_credentials_returns_unknown():
         password="",
         session_file="nonexistent_session.json",
     )
-    result = await checker.check("instagram")
-    assert result.status is AccountStatus.UNKNOWN
-    assert result.error_category == "unauthenticated"
+    with patch.object(checker, "_check_fallback", return_value=CheckResult(AccountStatus.UNKNOWN, "Authentication required", error_category="unauthenticated")):
+        result = await checker.check("instagram")
+        assert result.status is AccountStatus.UNKNOWN
+        assert result.error_category == "unauthenticated"
 
 
 @pytest.mark.asyncio

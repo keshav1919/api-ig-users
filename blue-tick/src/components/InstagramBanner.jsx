@@ -216,10 +216,11 @@ export const InstagramBanner = ({ user: propUser, onChangeUsername }) => {
                 </div>
               )}
 
-              {/* Followers / Following */}
+              {/* Followers / Following / Posts */}
               <div
                 className="
                   flex
+                  flex-wrap
                   items-center
                   justify-start
                   text-[12.5px]
@@ -228,33 +229,34 @@ export const InstagramBanner = ({ user: propUser, onChangeUsername }) => {
                   pt-0.5
                 "
               >
-              {user.isPrivate ? (
-                <span className="text-[12.5px] text-[#737373]">
-                  <Lock className="w-3 h-3 inline mr-1" />
-                  Private Account
+                <span>
+                  <span className="font-semibold text-[#262626]">{user.followers || '0'}</span> followers
                 </span>
-              ) : (
-                <>
-                  <span>
-                    <span className="font-semibold text-[#262626]">{user.followers || '0'}</span> followers
-                  </span>
 
-                  <span className="mx-2 text-[#DBDBDB]">•</span>
+                <span className="mx-2 text-[#DBDBDB]">•</span>
 
-                  <span>
-                    <span className="font-semibold text-[#262626]">{user.following || '0'}</span> following
-                  </span>
+                <span>
+                  <span className="font-semibold text-[#262626]">{user.following || '0'}</span> following
+                </span>
 
-                  {user.posts && user.posts !== '0' && (
-                    <>
-                      <span className="mx-2 text-[#DBDBDB]">•</span>
-                      <span>
-                        <span className="font-semibold text-[#262626]">{user.posts}</span> posts
-                      </span>
-                    </>
-                  )}
-                </>
-              )}
+                {user.posts && user.posts !== '0' && (
+                  <>
+                    <span className="mx-2 text-[#DBDBDB]">•</span>
+                    <span>
+                      <span className="font-semibold text-[#262626]">{user.posts}</span> posts
+                    </span>
+                  </>
+                )}
+
+                {user.isPrivate && (
+                  <>
+                    <span className="mx-2 text-[#DBDBDB]">•</span>
+                    <span className="inline-flex items-center gap-1 text-[11.5px] font-medium text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">
+                      <Lock className="w-3 h-3 text-amber-600" />
+                      Private
+                    </span>
+                  </>
+                )}
               </div>
             </div>
           </section>
@@ -265,8 +267,8 @@ export const InstagramBanner = ({ user: propUser, onChangeUsername }) => {
           <span className="flex items-center gap-1.5">
             {user.isPrivate ? (
               <>
-                <Lock className="w-3.5 h-3.5 text-[#737373]" />
-                <span>Private Profile Verified</span>
+                <Lock className="w-3.5 h-3.5 text-amber-600" />
+                <span className="text-amber-700 font-medium">Private Account Verified & Active</span>
               </>
             ) : (
               <>

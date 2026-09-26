@@ -12,13 +12,13 @@ taskkill /F /IM cloudflared.exe /T 2>nul
 taskkill /F /IM caddy.exe /T 2>nul
 for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":8000" ^| findstr "LISTENING"') do taskkill /F /PID %%a 2>nul
 powershell -Command "Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like '*indo-chk*' -or $_.CommandLine -like '*bot.py*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }" 2>nul
-timeout /t 1 /nobreak >nul
+ping 127.0.0.1 -n 2 >nul
 
 echo [1/3] Launching Shared Backend API on port 8000...
 start "Instagram Shared API Backend (Port 8000)" cmd /k "cd /d ""%~dp0shared-backend"" && python -m app.main"
 
 echo Waiting 3 seconds for backend initialization...
-timeout /t 3 /nobreak >nul
+ping 127.0.0.1 -n 4 >nul
 
 echo [2/3] Launching Caddy HTTPS Server (legendtech.store)...
 start "Caddy HTTPS Server (legendtech.store)" cmd /k "cd /d ""%~dp0"" && caddy.exe run --config Caddyfile"
@@ -39,4 +39,4 @@ echo - Telegram Bot:      Listening for messages...
 echo ==========================================================
 echo Keep the opened service windows running.
 echo.
-pause
+ping 127.0.0.1 -n 3 >nul

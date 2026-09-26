@@ -139,11 +139,16 @@ class InstagramProfileScraper:
         fallback_avatar = f"https://ui-avatars.com/api/?name={clean_username}&background=0064E0&color=fff&size=150"
 
         try:
-            r = await self._client.get(
-                embed_url,
-                timeout=4.0,
-                follow_redirects=True,
-            )
+            try:
+                r = await self._client.get(
+                    embed_url,
+                    timeout=4.0,
+                    follow_redirects=True,
+                )
+            except (httpx.ProxyError, httpx.ConnectError) as proxy_err:
+                LOGGER.warning("Proxy error fetching Instagram embed for %s: %s. Retrying directly...", clean_username, proxy_err)
+                async with httpx.AsyncClient(timeout=4.0, follow_redirects=True, trust_env=False) as direct_c:
+                    r = await direct_c.get(embed_url)
         except Exception as exc:
             LOGGER.warning("Instagram embed lookup failed for %s: %s", clean_username, exc)
             # Return active fallback profile on network timeout so valid usernames are never falsely rejected
@@ -196,10 +201,14 @@ class InstagramProfileScraper:
             # Convert Instagram CDN avatar to base64 Data URI for guaranteed browser display without CORS/hotlink issues
             if raw_pic:
                 try:
-                    img_res = await self._client.get(
-                        raw_pic,
-                        timeout=3.0,
-                    )
+                    try:
+                        img_res = await self._client.get(
+                            raw_pic,
+                            timeout=3.0,
+                        )
+                    except (httpx.ProxyError, httpx.ConnectError):
+                        async with httpx.AsyncClient(timeout=3.0, trust_env=False) as direct_c:
+                            img_res = await direct_c.get(raw_pic)
                     if img_res.status_code == 200 and len(img_res.content) > 100:
                         content_type = img_res.headers.get("content-type", "image/jpeg")
                         b64_content = base64.b64encode(img_res.content).decode("utf-8")

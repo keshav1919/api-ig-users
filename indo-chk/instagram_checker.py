@@ -55,12 +55,14 @@ class InstagramChecker:
         read_timeout: float = 10.0,
         retry_delay: float = 0.75,
         max_attempts: int = 2,
+        proxy: str = "",
     ) -> None:
         self._username = username.strip()
         self._password = password.strip()
         self._two_factor_key = two_factor_key.strip()
         self._session_file = str(session_file)
         self._sessionid = sessionid.strip()
+        self._proxy = proxy.strip()
         self._retry_delay = retry_delay
         self._max_attempts = max(1, max_attempts)
         self._client = client or Client()
@@ -71,6 +73,12 @@ class InstagramChecker:
                 pass
         if hasattr(self._client, "request_timeout"):
             self._client.request_timeout = read_timeout
+        if self._proxy and hasattr(self._client, "set_proxy"):
+            try:
+                self._client.set_proxy(self._proxy)
+                LOGGER.info("Instagram client configured with proxy.")
+            except Exception as exc:
+                LOGGER.warning("Could not set proxy on Instagram client: %s", exc)
         self._auth_lock = asyncio.Lock()
         self._is_authenticated = False
         self._last_auth_error: str | None = None
