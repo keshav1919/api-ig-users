@@ -125,9 +125,7 @@ export const PlanCard = () => {
                   <VerifiedBadge size={14} className="shrink-0" />
                 </div>
                 <div className="text-xs text-[#737373] truncate">
-                  {displayUser.isPrivate
-                    ? `Instagram • ${displayUser.followers || '0'} followers • Private`
-                    : `Instagram • ${displayUser.followers || '0'} followers`}
+                  {displayUser.isPrivate ? 'Instagram • Private Account' : `Instagram • ${displayUser.followers || '0'} followers`}
                 </div>
               </div>
             </div>

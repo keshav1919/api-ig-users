@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AtSign, ArrowRight, Loader2, X, Lock } from 'lucide-react';
+import { AtSign, ArrowRight, Loader2, X } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 
 export const UsernameModal = ({ isOpen, onClose, redirectPath = '/plans' }) => {
@@ -90,22 +90,9 @@ export const UsernameModal = ({ isOpen, onClose, redirectPath = '/plans' }) => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1 font-semibold text-xs text-[#262626]">
                   <span className="truncate">@{currentUser.username}</span>
-                  {currentUser.isPrivate && (
-                    <span title="Private Account" className="text-amber-600 shrink-0">
-                      <Lock className="w-3 h-3" />
-                    </span>
-                  )}
                 </div>
-                <div className="text-[11px] text-[#737373] truncate flex items-center gap-1">
-                  <span>{currentUser.followers || '0'} followers</span>
-                  <span>•</span>
-                  {currentUser.isPrivate ? (
-                    <span className="text-amber-700 font-medium inline-flex items-center gap-0.5">
-                      <Lock className="w-2.5 h-2.5" /> Private Account
-                    </span>
-                  ) : (
-                    <span>Public</span>
-                  )}
+                <div className="text-[11px] text-[#737373] truncate">
+                  {currentUser.isPrivate ? '🔒 Private Account' : `${currentUser.followers} followers • Public`}
                 </div>
               </div>
             </div>

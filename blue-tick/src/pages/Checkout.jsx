@@ -140,11 +140,11 @@ export const Checkout = () => {
                 <span className="truncate">@{currentUser.username}</span>
               </div>
               <div className="text-[11px] text-[#737373] truncate">
-                {currentUser.fullName || currentUser.username} • {currentUser.followers || '0'} followers{currentUser.isPrivate ? ' • 🔒 Private' : ''}
+                {currentUser.fullName || currentUser.username} • {currentUser.isPrivate ? 'Private Account' : `${currentUser.followers} followers`}
               </div>
-              <div className={`text-[10px] ${currentUser.isPrivate ? 'text-amber-700' : 'text-emerald-600'} font-semibold flex items-center gap-1 mt-0.5`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${currentUser.isPrivate ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse`}></span>
-                <span>{currentUser.isPrivate ? 'Private Profile Live Detected' : 'Profile Photo Live Detected'}</span>
+              <div className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1 mt-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Profile Photo Live Detected</span>
               </div>
             </div>
           </div>

@@ -130,21 +130,16 @@ export const Home = () => {
               <div className="text-left min-w-0">
                 <div className="flex items-center gap-1 text-xs font-bold text-[#1c1e21]">
                   <span className="truncate">@{currentUser.username}</span>
-                  {currentUser.isPrivate && (
-                    <span title="Private Account" className="text-amber-600 shrink-0">
-                      <Lock className="w-3 h-3" />
-                    </span>
-                  )}
                 </div>
                 <div className="text-[11px] text-[#737373] truncate flex items-center gap-1">
-                  <span>{currentUser.followers || '0'} followers</span>
-                  <span>•</span>
                   {currentUser.isPrivate ? (
-                    <span className="text-amber-700 font-medium inline-flex items-center gap-0.5">
-                      <Lock className="w-2.5 h-2.5" /> Private
-                    </span>
+                    <span>🔒 Private Account</span>
                   ) : (
-                    <span>Public</span>
+                    <>
+                      <span>{currentUser.followers} followers</span>
+                      <span>•</span>
+                      <span>Public</span>
+                    </>
                   )}
                 </div>
               </div>
